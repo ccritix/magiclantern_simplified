@@ -200,6 +200,11 @@ static void tskmon_stack_checker(struct task *next_task)
             return; // in Play mode, uses 128 of 256, 128 free
         #endif
 
+        #if defined(CONFIG_M6II)
+        if (streq(task_name, "HeartBeat0") && free > 192)
+            return; // uses 264 of 512, 248 free
+        #endif
+
         bmp_printf(FONT(FONT_MED, free < 128 ? COLOR_RED : COLOR_WHITE, COLOR_BLACK), 0, 0, 
             "[%d] %s: stack %s: free=%d used=%d ",
             id, task_name,
