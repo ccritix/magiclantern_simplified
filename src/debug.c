@@ -123,6 +123,37 @@ void info_led_blink(int times, int delay_on, int delay_off)
     }
 }
 
+#ifdef CONFIG_DIGIC_8X
+// This func is used when backing up ROM from Debug menu.
+//
+// These cams seem to disallow reads from ROM when using FIO_WriteFile().
+// The check is explicit.  See "buf is ROM addr" string.
+// Reason is unknown.  Possibly DMA related, these ranges might not be
+// accessible to DMA on these cams?  Untested guess.
+static void chunk_save(FILE *f, uint32_t src_addr, int chunk_size, int chunk_count, int y)
+{
+    if (src_addr == 0)
+        return;
+
+    char *buf = malloc(chunk_size);
+    if (buf == NULL)
+    {
+        bmp_printf(FONT_LARGE, 0, y, "Couldn't alloc for chunk save");
+        return;
+    }
+
+    for (int i = 0; i < chunk_count; i++)
+    {
+        bmp_printf(FONT_LARGE, 0, y, "chunk: %d", i);
+        memcpy(buf, (uint32_t *)(src_addr + chunk_size * i), chunk_size);
+        sync_caches();
+        FIO_WriteFile(f, buf, chunk_size);
+    }
+    free(buf);
+    buf = NULL;
+}
+#endif
+
 static void dump_rom_task(void* priv, int unused)
 {
     msleep(200);
@@ -134,9 +165,24 @@ static void dump_rom_task(void* priv, int unused)
     f = FIO_CreateFile("ML/LOGS/ROM0.BIN");
     if (f)
     {
-        bmp_printf(FONT_LARGE, 0, 60, "Writing ROM0");
+        bmp_printf(FONT_LARGE, 0, 100, "Writing ROM0");
+
+        #ifdef CONFIG_DIGIC_8X // these can't FIO_WriteFile() direct from ROM
+        const int chunk_count = 32;
+        const int chunk_size = ROM0_SIZE / chunk_count;
+        if (chunk_size * chunk_count != ROM0_SIZE) // didn't divide cleanly by chunk_count
+        {
+            bmp_printf(FONT_LARGE, 0, 130, "Err, unexpected ROM size: %d", ROM0_SIZE);
+            return;
+        }
+        chunk_save(f, ROM0_ADDR, chunk_size, chunk_count, 130);
+
+        #else // pre-D8 cams can write direct from ROM
         FIO_WriteFile(f, (void*)ROM0_ADDR, ROM0_SIZE);
+        #endif
+
         FIO_CloseFile(f);
+        bmp_printf(FONT_LARGE, 0, 160, "ROM0 done");
     }
     msleep(200);
 #endif
@@ -145,9 +191,24 @@ static void dump_rom_task(void* priv, int unused)
     f = FIO_CreateFile("ML/LOGS/ROM1.BIN");
     if (f)
     {
-        bmp_printf(FONT_LARGE, 0, 60, "Writing ROM1");
+        bmp_printf(FONT_LARGE, 0, 190, "Writing ROM1");
+
+        #ifdef CONFIG_DIGIC_8X
+        const int chunk_count = 32;
+        const int chunk_size = ROM1_SIZE / chunk_count;
+        if (chunk_size * chunk_count != ROM1_SIZE) // didn't divide cleanly by chunk_count
+        {
+            bmp_printf(FONT_LARGE, 0, 220, "Err, unexpected ROM size: %d", ROM1_SIZE);
+            return;
+        }
+        chunk_save(f, ROM1_ADDR, chunk_size, chunk_count, 220);
+
+        #else // pre-D8 cams can write direct from ROM
         FIO_WriteFile(f, (void*)ROM1_ADDR, ROM1_SIZE);
+        #endif
+
         FIO_CloseFile(f);
+        bmp_printf(FONT_LARGE, 0, 250, "ROM1 done");
     }
     msleep(200);
 #endif
