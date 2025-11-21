@@ -34,6 +34,7 @@
 #include "property.h"
 #include "consts.h"
 #include "tskmon.h"
+#include "rom_values.h"
 
 #include "boot-hack.h"
 #include "ml-cbr.h"
@@ -207,7 +208,10 @@ static void backup_region(char *file, uint32_t base, uint32_t length)
     FILE *handle = NULL;
     uint32_t size = 0;
     uint32_t pos = 0;
-    
+
+    if (base == 0 || length == 0)
+        return;
+
     /* already backed up that region? */
     if((FIO_GetFileSize( file, &size ) == 0) && (size == length) )
     {
@@ -245,8 +249,8 @@ static void backup_region(char *file, uint32_t base, uint32_t length)
 
 static void backup_rom_task()
 {
-    backup_region("ML/LOGS/ROM1.BIN", 0xF8000000, 0x01000000);
-    backup_region("ML/LOGS/ROM0.BIN", 0xF0000000, 0x01000000);
+    backup_region("ML/LOGS/ROM1.BIN", ROM1_ADDR, ROM1_SIZE);
+    backup_region("ML/LOGS/ROM0.BIN", ROM0_ADDR, ROM0_SIZE);
 }
 #endif
 
@@ -482,11 +486,6 @@ static void my_big_init_task()
     uart_printf("hello from ML, after early tasks");
 #endif
 
-    /**
-     * kitor FIXME: disabling rom dump for D678 as it uses different addresses
-     * and offsets. I feel those should be per generation, or maybe per camera
-     * as R has different rom size than RP in same gen...
-     */
     #if defined(CONFIG_AUTOBACKUP_ROM) && !defined(CONFIG_QEMU)
     /* backup ROM first time to be prepared if anything goes wrong. choose low prio */
     /* On 5D3, this needs to run after init functions (after card tests) */

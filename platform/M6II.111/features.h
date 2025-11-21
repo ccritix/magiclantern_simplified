@@ -39,5 +39,6 @@
 // This should be fine on all D8
 #define CONFIG_CRASH_LOG
 
-#undef CONFIG_AUTOBACKUP_ROM
+#define CONFIG_AUTOBACKUP_ROM
+
 #undef CONFIG_ADDITIONAL_VERSION

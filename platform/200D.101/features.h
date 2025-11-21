@@ -70,5 +70,7 @@
 // http://www.mcternan.me.uk/ArmStackUnwinding/
 #define CONFIG_CRASH_LOG
 
+// If rom backups don't exist on this card, create them
+#define CONFIG_AUTOBACKUP_ROM
+
 #undef CONFIG_ADDITIONAL_VERSION
-#undef CONFIG_AUTOBACKUP_ROM

@@ -32,5 +32,4 @@
 
 #define FEATURE_INTERVALOMETER
 
-// explicitly disable stuff that don't work or may break things
-#undef CONFIG_AUTOBACKUP_ROM
+#define CONFIG_AUTOBACKUP_ROM

@@ -3,6 +3,7 @@
  *
  * These are used by installer.c (ML-SETUP.FIR builds) and
  * debug.c (normal ML builds) when dumping roms.
+ * Also used in init.c if we have CONFIG_AUTOBACK_ROM.
  */
 
 #ifndef _rom_values_h_
