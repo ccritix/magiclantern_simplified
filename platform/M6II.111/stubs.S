@@ -165,14 +165,14 @@ THUMB_FN(0xe058c400, _prop_request_change)
  * Things needed for CONFIG_COMPOSITOR_XCM / CONFIG_XCM_DEDICATED_LAYER
  * Via EOS RP as it uses later XCM variant than R
  */
-THUMB_FN(0xe027640c, refreshVrmsSurface);           // Now called VMIX_TransferRectangleToVram
+THUMB_FN(0xe027640c, refreshVrmsSurface)           // Now called VMIX_TransferRectangleToVram
 DATA_PTR(   0x11ad8, display_refresh_needed)        // Easy to spot in refreshVrmsSurface()
-DATA_PTR(   0x78b74, RENDERER_LayersMetadata);
-THUMB_FN(0xe009acba, XCM_SetSourceSurface);         // XCM/XOC functions have nice debug strings
+DATA_PTR(   0x78b74, RENDERER_LayersMetadata)
+THUMB_FN(0xe009acba, XCM_SetSourceSurface)         // XCM/XOC functions have nice debug strings
 THUMB_FN(0xe009af70, XCM_GetSourceSurface)
-THUMB_FN(0xe009afa4, XCM_SetSourceArea);
-THUMB_FN(0xe027679a, XOC_SetLayerEnable);
-DATA_PTR(   0x78ce8, _pXCM);
+THUMB_FN(0xe009afa4, XCM_SetSourceArea)
+THUMB_FN(0xe027679a, XOC_SetLayerEnable)
+DATA_PTR(   0x78ce8, _pXCM)
 
 /**
  * General FEATURE_VRAM_RGBA stubs
@@ -182,9 +182,9 @@ DATA_PTR(   0x78ce8, _pXCM);
  * '_rgb_vram_info = RENDERER_LayersMetadata[0];'
  */
 //THUMB_FN(0xe01a1366, RENDERER_InitializeScreen)   // by debug message. Not used in code, left for reference above.
-THUMB_FN(0xe017cef0, XimrExe);                      // In RefreshVrmsSurface, just before "XimrExe" debug message
-DATA_PTR(    0x11ac4, winsys_sem);                   // Used in RefreshVrmsSurface around XimrExe call
-DATA_PTR(   0x11a8c, _rgb_vram_info);
+THUMB_FN(0xe017cef0, XimrExe)                      // In RefreshVrmsSurface, just before "XimrExe" debug message
+DATA_PTR(    0x11ac4, winsys_sem)                   // Used in RefreshVrmsSurface around XimrExe call
+DATA_PTR(   0x11a8c, _rgb_vram_info)
 
 
 /** App handlers **/
