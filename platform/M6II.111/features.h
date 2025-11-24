@@ -36,6 +36,9 @@
 #define FEATURE_PICSTYLE
 #define CONFIG_PROP_REQUEST_CHANGE
 
+// Fast disk logging
+#define FEATURE_DISK_LOG
+
 // This should be fine on all D8
 #define CONFIG_CRASH_LOG
 

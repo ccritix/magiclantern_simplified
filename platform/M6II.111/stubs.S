@@ -156,6 +156,8 @@ DATA_PTR(0x14684, sd_device)
 THUMB_FN(0xe0818adc, _LoadCalendarFromRTC)
 THUMB_FN(0xe08f942e, ErrForCamera_handler)
 
+THUMB_FN(0xe0599c42,  dm_set_store_level)
+
 /** Properties **/
 THUMB_FN(0xe058c8dc, _prop_cleanup)
 THUMB_FN(0xe058c332, prop_register_slave)
