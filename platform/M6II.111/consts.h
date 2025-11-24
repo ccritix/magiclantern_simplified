@@ -89,7 +89,10 @@ C048 Q menu
 #define CURRENT_GUI_MODE   (*(int*)0x8484) // via SetGUIRequestMode
 #define GUIMODE_PLAY 0x2002
 #define GUIMODE_MENU 0x2003
-    #define GUIMODE_ML_MENU (lv ? 0xc048 : GUIMODE_MENU) // TODO: Get value for LV.
+#define GUIMODE_ML_MENU (lv ? 0xc048 : GUIMODE_MENU) // Use Q mode dialog when in LV.  You want to find a dialog
+                                                     // that is available in every different LV sub-mode (e.g. Av, P, A+).
+                                                     // If you get this wrong, ML can think cam is not in LV,
+                                                     // and will restrict features visible in ML menus.
 //#define GUIMODE_ML_MENU (RECORDING ? 0 : lv ? 0x68 : GUIMODE_MENU) // TODO: y
 
 #define GMT_FUNCTABLE               0xe096b554           //from gui_main_task
@@ -100,18 +103,17 @@ C048 Q menu
 #define LV_OVERLAYS_MODE MEM(0x16800)  // via LvInfoToggle_Update()
 
 
-// TODO: Do LVAE stuff
-      #define LVAE_STRUCT                 0x45EF0              // First value written in 0xe12f9d86
-      #define CONTROL_BV      (*(uint16_t*)(LVAE_STRUCT+0x28)) // via "lvae_setcontrolbv"
-      #define CONTROL_BV_TV   (*(uint16_t*)(LVAE_STRUCT+0x36)) // via "lvae_setcontrolaeparam"
-      #define CONTROL_BV_AV   (*(uint16_t*)(LVAE_STRUCT+0x38)) // via "lvae_setcontrolaeparam"
-      #define CONTROL_BV_ISO  (*(uint16_t*)(LVAE_STRUCT+0x3A)) // via "lvae_setcontrolaeparam"
-      #define CONTROL_BV_ZERO (*(uint16_t*)(LVAE_STRUCT+0x3C)) // via "lvae_setcontrolaccumh"
-      #define LVAE_DISP_GAIN  (*(uint16_t*)(LVAE_STRUCT+0x58)) // via "lvae_setdispgain"
-      #define LVAE_MOV_M_CTRL (*(uint8_t* )(LVAE_STRUCT+0x24)) // via "lvae_setmoviemanualcontrol"
+#define LVAE_STRUCT 0x5167c // First value written in 0x2251b1e
+#define CONTROL_BV      (*(uint16_t*)(LVAE_STRUCT+0x28)) // via "lvae_setcontrolbv"
+#define CONTROL_BV_TV   (*(uint16_t*)(LVAE_STRUCT+0x3e)) // via "lvae_setcontrolaeparam"
+#define CONTROL_BV_AV   (*(uint16_t*)(LVAE_STRUCT+0x40)) // via "lvae_setcontrolaeparam"
+#define CONTROL_BV_ISO  (*(uint16_t*)(LVAE_STRUCT+0x42)) // via "lvae_setcontrolaeparam"
+#define CONTROL_BV_ZERO (*(uint16_t*)(LVAE_STRUCT+0x44)) // via "lvae_setcontrolaccumh"
+#define LVAE_DISP_GAIN  (*(uint16_t*)(LVAE_STRUCT+0x70)) // via "lvae_setdispgain"
+#define LVAE_MOV_M_CTRL (*(uint8_t* )(LVAE_STRUCT+0x24)) // via "lvae_setmoviemanualcontrol"
 
-      #define LVAE_ISO_STRUCT 0x6b818
-      #define LVAE_ISO_MIN    (*(uint8_t* )LVAE_ISO_STRUCT + 0x0E ) // via string: ISOMin:%d
+#define LVAE_ISO_STRUCT 0x69fe4
+#define LVAE_ISO_MIN    (*(uint8_t* )LVAE_ISO_STRUCT + 0x0E) // via string: ISOMin:%d
 
       //#define LVAE_ISO_HIS    (*(uint8_t* )(LVAE_STRUCT+0xXX)) // no idea, not referenced in ./src?!
       //#define LVAE_ISO_SPEED  (*(uint8_t* )(LVAE_STRUCT+0xXX))  //WRONG, not sure how to follow
