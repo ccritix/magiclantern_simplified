@@ -36,6 +36,7 @@ const uint32_t prop_handler_deny[] =
 // allow writes / allow prop_request_change() for these:
 const uint32_t prop_write_allow[] =
 {
+    PROP_ICU_AUTO_POWEROFF,
     PROP_PICTURE_STYLE,
     PROP_PICSTYLE_SETTINGS_STANDARD,
     PROP_PICSTYLE_SETTINGS_PORTRAIT,
