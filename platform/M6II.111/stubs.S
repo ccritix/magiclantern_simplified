@@ -36,14 +36,23 @@ THUMB_FN(0xe0040104, cstart)
 THUMB_FN(0xe059a5f4, bzero32)
 THUMB_FN(0xe028bcfc, create_init_task)
 THUMB_FN(0xe0599200, dcache_clean)
+THUMB_FN(0xe005e63c, dcache_clean_multicore)
 THUMB_FN(0xe05992d4, icache_invalidate)
 THUMB_FN(0xe0040236, init_task)
+
+// Not really startup, but used by MMU remap stuff during startup,
+// if you do early MMU patching
+THUMB_FN(0xe02be544, memcpy_dryos)
+THUMB_FN(0xe0576e86, change_mmu_tables) // Updates TTBRs and does TLB maintenance.
+                                        // To find a copy outside of bootloader, try search for hex bytes
+                                        // of first instr;  mov.w   r3,#0x55555555
 
 /** Tasks **/
 DATA_PTR(0x1010, current_interrupt)
 DATA_PTR(0x1028, current_task)
 THUMB_FN(0xe058599a, msleep)
 THUMB_FN(0xe059da7a, task_create)
+THUMB_FN(0xe059dc92, task_create_ex)
 DATA_PTR( 0x4118, task_max)
 
 /** File I/O **/
@@ -81,6 +90,24 @@ THUMB_FN(0xe058c168, _free_dma_memory)
 THUMB_FN(0xe0360e94, _malloc)
 THUMB_FN(0xe0360ecc, _free)
 
+/** Interrupts **/
+THUMB_FN(0xe01c54c0,  cli_spin_lock)          /* used in AllocateMemory/FreeMemory and others */
+THUMB_FN(0xe00af448,  send_software_interrupt) // int 10 is used by DryOS to sleep/wake cpu.
+                                               // Func writes to 0xc1001f00
+THUMB_FN(0xdf002c52, _request_RPC) // allows CPU0 or CPU1 to pass a func pointer and param
+                                   // to the other for RPC.
+                                   // Passing a NULL func pointer, will suspend the other
+                                   // CPU until it becomes non-NULL.
+                                   // DryOS seems to use this to deliberately sleep a CPU
+                                   // in some exceptional cases (e.g. asserts).
+                                   //
+                                   // Don't call this directly, because if you do,
+                                   // and you forget to call clear_RPC_request(),
+                                   // the target CPU will repeatedly call the func pointer
+                                   // as fast as possible, forever.
+                                   // Instead use request_RPC().
+THUMB_FN(0xdf002c72,  clear_RPC_request) // reset the request to prevent calling
+                                         // the function forever
 /** Memory allocation **/
 THUMB_FN(0xe058b9b8, _AllocateMemory)                       /* NG AllocateMemory */
 THUMB_FN(0xe058bb70, _FreeMemory)                           /* uses the same heap */

@@ -6,6 +6,8 @@
 #define LEDON                       0xD0002
 #define LEDOFF                      0xC0003
 
+#define CANON_ORIG_MMU_TABLE_ADDR 0xe0000000
+
 #define BR_DCACHE_CLN_1     0xe0040068   /* first call to dcache_clean, before cstart */
 #define BR_ICACHE_INV_1     0xe0040072   /* first call to icache_invalidate, before cstart */
 #define BR_DCACHE_CLN_2     0xe00400a0   /* second call to dcache_clean, before cstart */
@@ -21,6 +23,7 @@
 #define FIRMWARE_ENTRY_LEN 0x228
 
 #define DRYOS_ASSERT_HANDLER  0x4000    //from debug_asset function, hard to miss
+#define DRYOS_SGI_HANDLERS_PTR 0x402c // holds pointer to base of SGI handlers (each is 8 bytes, a pointer and something else)
 
 #define MALLOC_STRUCT_ADDR    0x2d99c   // via meminfo -m
 
