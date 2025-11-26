@@ -1941,7 +1941,7 @@ int handle_buttons_being_held(struct event * event)
     return 1;
 }
 
-void turn_on_display(void)
+static void turn_on_display(void)
 {
     #if defined(CONFIG_DIGIC_45)
     call("TurnOnDisplay");
@@ -1951,7 +1951,7 @@ void turn_on_display(void)
     #endif
 }
 
-void turn_off_display(void)
+static void turn_off_display(void)
 {
     #if defined(CONFIG_DIGIC_45)
     call("TurnOffDisplay");
