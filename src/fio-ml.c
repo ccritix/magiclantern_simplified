@@ -670,14 +670,13 @@ int FIO_WriteFile( FILE* stream, const void* ptr, size_t count )
         /* overhead is minimal (see selftest.mo for benchmark) */
         sync_caches();
     }
-#ifdef CONFIG_MEM_2GB
-    // Not all mem is cacheable on these cams, and FIO_WriteFile
-    // requires uncacheable address, or errors:
-    // [FSU] WARN Please Designate Uncacheable Addr!!!!!!
+
+    // Here we force uncacheable, as new cams require this for FIO ops.
+    // Old cams don't, but we assume use of cacheable ptrs in DryOS is a bug;
+    // the DMA engine will work directly on the uncacheable data.
+    // We've just flushed cache above, so the window for inconsistency is small,
+    // and we should never be making the situation worse.
     return _FIO_WriteFile(stream, UNCACHEABLE(ptr), count);
-#else
-    return _FIO_WriteFile(stream, ptr, count);
-#endif
 }
 
 FILE* FIO_CreateFileOrAppend(const char* name)
