@@ -3,18 +3,18 @@
 
 int get_fps_register_a(void)
 {
-//    return shamem_read(FPS_REGISTER_A);
-    return 1;
+    extern int _get_fps_register_a(void);
+    return _get_fps_register_a();
 }
 
 int get_fps_register_a_default(void)
 {
-//    return shamem_read(FPS_REGISTER_A + 4);
-    return 1;
+    // See 200D for longer comments
+    return 1122 << 16;
 }
 
 int get_fps_register_b(void)
 {
-//    return shamem_read(FPS_REGISTER_B);
-    return 1;
+    extern int _get_fps_register_b(void);
+    return _get_fps_register_b();
 }
